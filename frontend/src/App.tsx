@@ -1,18 +1,20 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './theme';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
 import Home from './pages/Home';
 import Pricing from './pages/Pricing';
 import FAQ from './pages/FAQ';
 import Contact from './pages/Contact';
-import TextToImageForm from './components/TextToImageForm';
-import { AuthProvider } from './contexts/AuthContext';
-import TextToSpeech from './pages/tools/TextToSpeech';
-import EmailAgents from './pages/tools/EmailAgents';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
+import TextToImage from './pages/tools/TextToImage';
+import TextToSpeech from './pages/tools/TextToSpeech';
+import EmailAgents from './pages/tools/EmailAgents';
+import { CssBaseline } from '@mui/material';
+import { Box } from '@mui/material';
 
 function App() {
   return (
@@ -20,19 +22,23 @@ function App() {
       <CssBaseline />
       <AuthProvider>
         <Router>
-          <Header />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/text-to-image" element={<TextToImageForm />} />
-            <Route path="/tools/text-to-speech" element={<TextToSpeech />} />
-            <Route path="/tools/email-agents" element={<EmailAgents />} />
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/signup" element={<Signup />} />
-          </Routes>
-          <Footer />
+          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <Header />
+            <Box component="main" sx={{ flexGrow: 1 }}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/auth/login" element={<Login />} />
+                <Route path="/auth/signup" element={<Signup />} />
+                <Route path="/tools/text-to-image" element={<TextToImage />} />
+                <Route path="/tools/text-to-speech" element={<TextToSpeech />} />
+                <Route path="/tools/email-agents" element={<EmailAgents />} />
+              </Routes>
+            </Box>
+            <Footer />
+          </Box>
         </Router>
       </AuthProvider>
     </ThemeProvider>

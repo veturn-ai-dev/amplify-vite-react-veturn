@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 
@@ -25,6 +25,7 @@ interface CustomUser {
 
 interface AuthContextType {
   user: CustomUser | null;
+  isAuthenticated: boolean;
   setUser: (user: CustomUser | null) => void;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
@@ -92,6 +93,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const value = {
     user,
+    isAuthenticated: !!user,
     setUser,
     login,
     signup,

@@ -1,19 +1,47 @@
-import React, { useState } from 'react';
-import { Box, Container, Typography, TextField, Button, Grid, Paper, IconButton } from '@mui/material';
+import { useState } from 'react';
+import { Box, Container, Typography, TextField, Button, Grid, Paper, IconButton, CircularProgress } from '@mui/material';
 import { Add as PlusIcon, Settings as SettingsIcon, Mail as MailIcon } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 
-export default function EmailAgents() {
+const EmailAgents = () => {
   const { user } = useAuth();
-  const [agentName, setAgentName] = useState('');
-  const [emailAddress, setEmailAddress] = useState('');
-  const [description, setDescription] = useState('');
+  const [subject, setSubject] = useState('');
+  const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [generatedEmail, setGeneratedEmail] = useState('');
 
-  const handleCreateAgent = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement agent creation logic
-    console.log('Creating agent:', { agentName, emailAddress, description });
+    if (!user) {
+      setError('Please log in to use this feature');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/generate-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ subject, content }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate email');
+      }
+
+      const data = await response.json();
+      setGeneratedEmail(data.email);
+    } catch (err) {
+      setError('Failed to generate email. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -67,43 +95,33 @@ export default function EmailAgents() {
                   Set up a new email agent with custom rules and behaviors
                 </Typography>
 
-                <form onSubmit={handleCreateAgent} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <TextField
                     fullWidth
-                    label="Agent Name"
-                    value={agentName}
-                    onChange={(e) => setAgentName(e.target.value)}
-                    placeholder="e.g., Customer Support Agent"
-                    sx={{ mb: 3 }}
-                  />
-                  <TextField
-                    fullWidth
-                    type="email"
-                    label="Email Address"
-                    value={emailAddress}
-                    onChange={(e) => setEmailAddress(e.target.value)}
-                    placeholder="agent@yourdomain.com"
-                    sx={{ mb: 3 }}
+                    label="Subject"
+                    variant="outlined"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    required
                   />
                   <TextField
                     fullWidth
                     multiline
                     rows={4}
-                    label="Description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Describe the agent's purpose and behavior..."
-                    sx={{ mb: 3 }}
+                    label="Content"
+                    variant="outlined"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    required
                   />
                   <Button
                     type="submit"
                     variant="contained"
                     color="primary"
-                    size="large"
+                    disabled={loading}
                     fullWidth
-                    startIcon={<PlusIcon />}
                   >
-                    Create Agent
+                    {loading ? <CircularProgress size={24} /> : 'Generate Email'}
                   </Button>
                 </form>
               </Paper>
@@ -194,7 +212,28 @@ export default function EmailAgents() {
             </motion.div>
           </Grid>
         </Grid>
+
+        {error && (
+          <Grid item xs={12}>
+            <Typography color="error">{error}</Typography>
+          </Grid>
+        )}
+
+        {generatedEmail && (
+          <Grid item xs={12}>
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Generated Email:
+              </Typography>
+              <Paper sx={{ p: 2, bgcolor: 'grey.100' }}>
+                <Typography>{generatedEmail}</Typography>
+              </Paper>
+            </Box>
+          </Grid>
+        )}
       </Container>
     </Box>
   );
-} 
+};
+
+export default EmailAgents; 
