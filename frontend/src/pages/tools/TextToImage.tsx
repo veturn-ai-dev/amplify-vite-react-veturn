@@ -10,11 +10,6 @@ import {
   Grid,
   CircularProgress,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-
-const Input = styled('input')({
-  display: 'none',
-});
 
 const TextToImage = () => {
   const { user } = useAuth();
