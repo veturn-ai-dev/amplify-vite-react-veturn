@@ -1,65 +1,46 @@
 import React from 'react';
 import { Box, Container, Typography, Grid, Paper } from '@mui/material';
-import { Image, Mic, Mail } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import ImageIcon from '@mui/icons-material/Image';
+import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
+import EmailIcon from '@mui/icons-material/Email';
 
 const features = [
   {
-    icon: <Image sx={{ fontSize: 40, color: 'primary.main' }} />,
     title: 'Text to Image',
-    description: 'Transform your text descriptions into stunning visuals with our advanced AI image generation technology.',
+    description: 'Transform your text descriptions into stunning visual art with our advanced AI image generation.',
+    icon: <ImageIcon sx={{ fontSize: 40 }} />,
   },
   {
-    icon: <Mic sx={{ fontSize: 40, color: 'primary.main' }} />,
     title: 'Text to Speech',
-    description: 'Convert your text into natural-sounding speech with multiple voice options and customization features.',
+    description: 'Convert any text into natural-sounding speech with multiple voice options and languages.',
+    icon: <RecordVoiceOverIcon sx={{ fontSize: 40 }} />,
   },
   {
-    icon: <Mail sx={{ fontSize: 40, color: 'primary.main' }} />,
     title: 'Email Agents',
-    description: 'Automate your email communications with intelligent agents that can handle various tasks and responses.',
+    description: 'Automate your email communications with AI-powered agents that understand context and tone.',
+    icon: <EmailIcon sx={{ fontSize: 40 }} />,
   },
 ];
 
-export default function Features() {
+const Features = () => {
   return (
-    <Box
-      sx={{
-        py: { xs: 8, md: 12 },
-        backgroundColor: 'white',
-      }}
-    >
+    <Box sx={{ py: 8, bgcolor: 'background.default' }}>
       <Container maxWidth="lg">
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography
-            variant="h2"
-            sx={{
-              fontWeight: 800,
-              fontSize: { xs: '2rem', md: '2.5rem' },
-              mb: 2,
-            }}
-          >
-            Powerful AI Tools
-          </Typography>
-          <Typography
-            variant="h5"
-            color="text.secondary"
-            sx={{ maxWidth: '800px', mx: 'auto' }}
-          >
-            Discover our suite of AI-powered tools designed to enhance your creative workflow
-          </Typography>
-        </Box>
-
+        <Typography variant="h4" component="h2" align="center" gutterBottom>
+          Powerful AI Tools
+        </Typography>
+        <Typography variant="subtitle1" align="center" color="text.secondary" paragraph>
+          Transform your ideas into reality with our suite of AI-powered tools
+        </Typography>
         <Grid container spacing={4}>
           {features.map((feature, index) => (
             <Grid item xs={12} md={4} key={index}>
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 300 }}
               >
                 <Paper
-                  elevation={0}
                   sx={{
                     p: 4,
                     height: '100%',
@@ -67,21 +48,10 @@ export default function Features() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     textAlign: 'center',
-                    backgroundColor: (theme) => theme.palette.grey[50],
-                    transition: 'transform 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                    },
                   }}
                 >
-                  <Box sx={{ mb: 3 }}>{feature.icon}</Box>
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      fontWeight: 700,
-                      mb: 2,
-                    }}
-                  >
+                  <Box sx={{ mb: 2 }}>{feature.icon}</Box>
+                  <Typography variant="h6" gutterBottom>
                     {feature.title}
                   </Typography>
                   <Typography color="text.secondary">
@@ -95,4 +65,6 @@ export default function Features() {
       </Container>
     </Box>
   );
-} 
+};
+
+export default Features; 

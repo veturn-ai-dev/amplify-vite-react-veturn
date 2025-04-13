@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Container, Typography, TextField, Button, Paper, Link, Alert } from '@mui/material';
+import { Box, Container, Typography, TextField, Button, Paper, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { motion } from 'framer-motion';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ export default function Signup() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const { signup } = useAuth();
   const auth = getAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,11 +27,10 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
-      setUser(result.user);
+      await signup(email, password);
       navigate('/');
-    } catch (error: any) {
-      setError(error.message);
+    } catch (err) {
+      setError('Failed to create an account. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -43,7 +43,6 @@ export default function Signup() {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      setUser(result.user);
       navigate('/');
     } catch (error: any) {
       setError(error.message);
@@ -96,9 +95,9 @@ export default function Signup() {
             </Typography>
 
             {error && (
-              <Alert severity="error" sx={{ width: '100%', mb: 3 }}>
+              <Typography color="error" sx={{ mb: 3 }}>
                 {error}
-              </Alert>
+              </Typography>
             )}
 
             <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
@@ -167,9 +166,9 @@ export default function Signup() {
               <Typography variant="body2" color="text.secondary">
                 Already have an account?{' '}
                 <Link
-                  component="button"
+                  component={RouterLink}
+                  to="/auth/login"
                   variant="body2"
-                  onClick={() => navigate('/auth/login')}
                   sx={{ fontWeight: 600 }}
                 >
                   Sign in

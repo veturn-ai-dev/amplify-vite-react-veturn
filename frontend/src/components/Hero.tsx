@@ -1,15 +1,17 @@
 import React from 'react';
 import { Box, Container, Typography, Button, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
-import { ArrowRight } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
-export default function Hero() {
+const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <Box
       sx={{
-        pt: { xs: 8, md: 12 },
-        pb: { xs: 6, md: 8 },
-        backgroundColor: (theme) => theme.palette.grey[50],
+        bgcolor: 'background.paper',
+        pt: 8,
+        pb: 6,
       }}
     >
       <Container maxWidth="lg">
@@ -18,72 +20,55 @@ export default function Hero() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.8 }}
             >
               <Typography
-                variant="h1"
-                sx={{
-                  fontWeight: 800,
-                  fontSize: { xs: '2.5rem', md: '3.5rem' },
-                  mb: 2,
-                  lineHeight: 1.2,
-                }}
+                component="h1"
+                variant="h2"
+                color="text.primary"
+                gutterBottom
+                sx={{ fontWeight: 'bold' }}
               >
-                Your AI-Powered Creative Suite
+                Transform Your Ideas into Reality
               </Typography>
-              <Typography
-                variant="h5"
-                color="text.secondary"
-                sx={{ mb: 4, fontSize: { xs: '1.25rem', md: '1.5rem' } }}
-              >
-                Transform your ideas into reality with our powerful AI tools. Generate images, convert text to speech, and manage email communications with ease.
+              <Typography variant="h5" color="text.secondary" paragraph>
+                Experience the power of AI with our suite of creative tools. Generate stunning images,
+                convert text to speech, and automate your email communications.
               </Typography>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Box sx={{ mt: 4 }}>
                 <Button
                   variant="contained"
                   size="large"
-                  endIcon={<ArrowRight />}
-                  sx={{
-                    px: 4,
-                    py: 1.5,
-                    fontSize: '1.1rem',
-                  }}
+                  onClick={() => navigate('/text-to-image')}
+                  sx={{ mr: 2 }}
                 >
-                  Get Started
+                  Try Text to Image
                 </Button>
                 <Button
                   variant="outlined"
                   size="large"
-                  sx={{
-                    px: 4,
-                    py: 1.5,
-                    fontSize: '1.1rem',
-                  }}
+                  onClick={() => navigate('/pricing')}
                 >
-                  Learn More
+                  View Pricing
                 </Button>
               </Box>
             </motion.div>
           </Grid>
           <Grid item xs={12} md={6}>
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
             >
               <Box
                 component="img"
                 src="/hero-image.png"
-                alt="AI Creative Suite"
+                alt="AI Creative Tools"
                 sx={{
                   width: '100%',
                   height: 'auto',
                   borderRadius: 2,
-                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-                  transition: 'transform 0.3s ease',
-                  '&:hover': {
-                    transform: 'scale(1.02)',
-                  },
+                  boxShadow: 3,
                 }}
               />
             </motion.div>
@@ -92,4 +77,6 @@ export default function Hero() {
       </Container>
     </Box>
   );
-} 
+};
+
+export default Hero; 

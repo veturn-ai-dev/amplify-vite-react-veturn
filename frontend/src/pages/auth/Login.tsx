@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { Box, Container, Typography, TextField, Button, Paper, Link, Alert } from '@mui/material';
+import { Box, Container, Typography, TextField, Button, Paper, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { motion } from 'framer-motion';
 
-export default function Login() {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
-  const { setUser } = useAuth();
   const auth = getAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,11 +21,10 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      setUser(result.user);
+      await login(email, password);
       navigate('/');
-    } catch (error: any) {
-      setError(error.message);
+    } catch (err) {
+      setError('Failed to log in. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -37,7 +37,6 @@ export default function Login() {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      setUser(result.user);
       navigate('/');
     } catch (error: any) {
       setError(error.message);
@@ -90,9 +89,9 @@ export default function Login() {
             </Typography>
 
             {error && (
-              <Alert severity="error" sx={{ width: '100%', mb: 3 }}>
+              <Typography color="error" sx={{ mt: 2 }}>
                 {error}
-              </Alert>
+              </Typography>
             )}
 
             <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
@@ -148,9 +147,9 @@ export default function Login() {
               <Typography variant="body2" color="text.secondary">
                 Don't have an account?{' '}
                 <Link
-                  component="button"
+                  component={RouterLink}
+                  to="/auth/signup"
                   variant="body2"
-                  onClick={() => navigate('/auth/signup')}
                   sx={{ fontWeight: 600 }}
                 >
                   Sign up
@@ -158,9 +157,9 @@ export default function Login() {
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                 <Link
-                  component="button"
+                  component={RouterLink}
+                  to="/auth/forgot-password"
                   variant="body2"
-                  onClick={() => navigate('/auth/forgot-password')}
                 >
                   Forgot password?
                 </Link>
@@ -171,4 +170,6 @@ export default function Login() {
       </Container>
     </Box>
   );
-} 
+};
+
+export default Login; 

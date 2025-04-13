@@ -1,235 +1,197 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   AppBar,
-  Toolbar,
-  Button,
   Box,
+  Toolbar,
   IconButton,
+  Typography,
   Menu,
+  Container,
+  Button,
   MenuItem,
   Avatar,
-  Typography,
-  useTheme,
 } from '@mui/material';
-import {
-  Image as ImageIcon,
-  Mic as MicIcon,
-  Email as EmailIcon,
-  Settings as SettingsIcon,
-  Logout as LogoutIcon,
-} from '@mui/icons-material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { useAuth } from '../../contexts/AuthContext';
 
-export function Header() {
-  const theme = useTheme();
-  const location = useLocation();
-  const { user, logout } = useAuth();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+const pages = [
+  { name: 'Home', path: '/' },
+  { name: 'Text to Image', path: '/text-to-image' },
+  { name: 'Pricing', path: '/pricing' },
+  { name: 'FAQ', path: '/faq' },
+  { name: 'Contact', path: '/contact' },
+];
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+const Header = () => {
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
   };
 
   const handleLogout = async () => {
     try {
       await logout();
-      handleClose();
+      handleCloseUserMenu();
+      navigate('/');
     } catch (error) {
       console.error('Logout error:', error);
     }
   };
 
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
-
   return (
-    <AppBar position="sticky" color="default" elevation={0}>
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Link to="/" style={{ textDecoration: 'none' }}>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 800,
-                background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              Veturn AI
-            </Typography>
-          </Link>
-
-          <Box sx={{ ml: 4, display: 'flex', gap: 2 }}>
-            <Button
-              component={Link}
-              to="/tools/text-to-image"
-              color="inherit"
-              sx={{
-                fontWeight: isActive('/tools/text-to-image') ? 600 : 400,
-                color: isActive('/tools/text-to-image')
-                  ? theme.palette.primary.main
-                  : 'inherit',
-              }}
-            >
-              <ImageIcon sx={{ mr: 1 }} />
-              Text to Image
-            </Button>
-            <Button
-              component={Link}
-              to="/tools/text-to-speech"
-              color="inherit"
-              sx={{
-                fontWeight: isActive('/tools/text-to-speech') ? 600 : 400,
-                color: isActive('/tools/text-to-speech')
-                  ? theme.palette.primary.main
-                  : 'inherit',
-              }}
-            >
-              <MicIcon sx={{ mr: 1 }} />
-              Text to Speech
-            </Button>
-            <Button
-              component={Link}
-              to="/tools/email-agents"
-              color="inherit"
-              sx={{
-                fontWeight: isActive('/tools/email-agents') ? 600 : 400,
-                color: isActive('/tools/email-agents')
-                  ? theme.palette.primary.main
-                  : 'inherit',
-              }}
-            >
-              <EmailIcon sx={{ mr: 1 }} />
-              Email Agents
-            </Button>
-          </Box>
-        </Box>
-
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Button
-            component={Link}
-            to="/pricing"
-            color="inherit"
+    <AppBar position="static">
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <Typography
+            variant="h6"
+            noWrap
+            component={RouterLink}
+            to="/"
             sx={{
-              fontWeight: isActive('/pricing') ? 600 : 400,
-              color: isActive('/pricing') ? theme.palette.primary.main : 'inherit',
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontWeight: 700,
+              color: 'inherit',
+              textDecoration: 'none',
             }}
           >
-            Pricing
-          </Button>
-          <Button
-            component={Link}
-            to="/faq"
-            color="inherit"
-            sx={{
-              fontWeight: isActive('/faq') ? 600 : 400,
-              color: isActive('/faq') ? theme.palette.primary.main : 'inherit',
-            }}
-          >
-            FAQ
-          </Button>
-          <Button
-            component={Link}
-            to="/contact"
-            color="inherit"
-            sx={{
-              fontWeight: isActive('/contact') ? 600 : 400,
-              color: isActive('/contact') ? theme.palette.primary.main : 'inherit',
-            }}
-          >
-            Contact
-          </Button>
+            Veturn AI
+          </Typography>
 
-          {user ? (
-            <>
-              <IconButton
-                onClick={handleMenu}
-                size="small"
-                sx={{ ml: 2 }}
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-              >
-                <Avatar
-                  sx={{ width: 32, height: 32 }}
-                  alt={user.displayName || 'User'}
-                  src={user.photoURL}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'flex', md: 'none' },
+              }}
+            >
+              {pages.map((page) => (
+                <MenuItem
+                  key={page.name}
+                  onClick={handleCloseNavMenu}
+                  component={RouterLink}
+                  to={page.path}
                 >
-                  {user.displayName?.charAt(0) || user.email?.charAt(0)}
-                </Avatar>
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem>
-                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <Typography variant="subtitle2">
-                      {user.displayName || 'User'}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {user.email}
-                    </Typography>
-                  </Box>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
-                <MenuItem component={Link} to="/settings/profile" onClick={handleClose}>
-                  <SettingsIcon sx={{ mr: 1 }} />
-                  Settings
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>
-                  <LogoutIcon sx={{ mr: 1 }} />
-                  Log out
-                </MenuItem>
-              </Menu>
-            </>
-          ) : (
-            <>
+              ))}
+            </Menu>
+          </Box>
+
+          <Typography
+            variant="h5"
+            noWrap
+            component={RouterLink}
+            to="/"
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+              fontWeight: 700,
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            Veturn AI
+          </Typography>
+
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
               <Button
-                component={Link}
-                to="/auth/login"
+                key={page.name}
+                onClick={handleCloseNavMenu}
+                component={RouterLink}
+                to={page.path}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page.name}
+              </Button>
+            ))}
+          </Box>
+
+          <Box sx={{ flexGrow: 0 }}>
+            {user ? (
+              <>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt={user.displayName || 'User'} src={user.photoURL || undefined} />
+                </IconButton>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">Profile</Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>
+                    <Typography textAlign="center">Logout</Typography>
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Button
                 color="inherit"
-                sx={{
-                  fontWeight: isActive('/auth/login') ? 600 : 400,
-                  color: isActive('/auth/login')
-                    ? theme.palette.primary.main
-                    : 'inherit',
-                }}
+                component={RouterLink}
+                to="/auth/login"
               >
-                Log in
+                Login
               </Button>
-              <Button
-                component={Link}
-                to="/auth/signup"
-                variant="contained"
-                color="primary"
-                sx={{
-                  fontWeight: 600,
-                  textTransform: 'none',
-                }}
-              >
-                Sign up
-              </Button>
-            </>
-          )}
-        </Box>
-      </Toolbar>
+            )}
+          </Box>
+        </Toolbar>
+      </Container>
     </AppBar>
   );
-} 
+};
+
+export default Header; 

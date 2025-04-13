@@ -1,16 +1,11 @@
-import { useState } from 'react';
-import {
-  Box,
-  Typography,
-  Container,
-  Grid,
-  TextField,
-  Button,
-  Paper,
-} from '@mui/material';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { Box, Container, Typography, TextField, Button, Grid, Paper } from '@mui/material';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 const schema = yup.object().shape({
   name: yup.string().required('Name is required'),
@@ -18,129 +13,96 @@ const schema = yup.object().shape({
   message: yup.string().required('Message is required'),
 });
 
-type FormData = {
-  name: string;
-  email: string;
-  message: string;
-};
-
-export default function Contact() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<FormData>({
+const Contact = () => {
+  const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true);
-    try {
-      // Handle form submission
-      console.log(data);
-      reset();
-    } catch (error) {
-      console.error('Error submitting form:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
+  const onSubmit = (data: any) => {
+    console.log(data);
+    // TODO: Implement form submission
   };
 
   return (
-    <Box
-      sx={{
-        bgcolor: 'background.paper',
-        py: 8,
-      }}
-      id="contact"
-    >
+    <Box sx={{ py: 8 }}>
       <Container maxWidth="lg">
-        <Typography
-          component="h2"
-          variant="h3"
-          align="center"
-          color="text.primary"
-          gutterBottom
-          sx={{ fontWeight: 'bold', mb: 6 }}
-        >
+        <Typography variant="h4" component="h1" gutterBottom align="center">
           Contact Us
         </Typography>
+        <Typography variant="subtitle1" align="center" color="text.secondary" paragraph>
+          Have questions? We'd love to hear from you.
+        </Typography>
         <Grid container spacing={4}>
-          <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 4 }}>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Name"
-                      {...register('name')}
-                      error={!!errors.name}
-                      helperText={errors.name?.message}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Email"
-                      type="email"
-                      {...register('email')}
-                      error={!!errors.email}
-                      helperText={errors.email?.message}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Message"
-                      multiline
-                      rows={4}
-                      {...register('message')}
-                      error={!!errors.message}
-                      helperText={errors.message?.message}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      size="large"
-                      fullWidth
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? 'Sending...' : 'Send Message'}
-                    </Button>
-                  </Grid>
-                </Grid>
-              </form>
+          <Grid item xs={12} md={4}>
+            <Paper sx={{ p: 3, height: '100%' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <EmailIcon sx={{ mr: 1 }} />
+                <Typography variant="h6">Email</Typography>
+              </Box>
+              <Typography>support@veturn.ai</Typography>
             </Paper>
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-                Get in Touch
-              </Typography>
-              <Typography variant="body1" color="text.secondary" paragraph>
-                Have questions about our veterinary practice management software?
-                We'd love to hear from you. Fill out the form and we'll get back
-                to you as soon as possible.
-              </Typography>
-              <Typography variant="body1" color="text.secondary" paragraph>
-                You can also reach us at:
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                Email: support@veturn.ai
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                Phone: (123) 456-7890
-              </Typography>
-            </Box>
+          <Grid item xs={12} md={4}>
+            <Paper sx={{ p: 3, height: '100%' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <PhoneIcon sx={{ mr: 1 }} />
+                <Typography variant="h6">Phone</Typography>
+              </Box>
+              <Typography>+1 (555) 123-4567</Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Paper sx={{ p: 3, height: '100%' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <LocationOnIcon sx={{ mr: 1 }} />
+                <Typography variant="h6">Address</Typography>
+              </Box>
+              <Typography>123 AI Street, Tech City, TC 12345</Typography>
+            </Paper>
           </Grid>
         </Grid>
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 4 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Name"
+                {...register('name')}
+                error={!!errors.name}
+                helperText={errors.name?.message}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Email"
+                type="email"
+                {...register('email')}
+                error={!!errors.email}
+                helperText={errors.email?.message}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Message"
+                multiline
+                rows={4}
+                {...register('message')}
+                error={!!errors.message}
+                helperText={errors.message?.message}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button type="submit" variant="contained" size="large" fullWidth>
+                Send Message
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
       </Container>
     </Box>
   );
-} 
+};
+
+export default Contact; 

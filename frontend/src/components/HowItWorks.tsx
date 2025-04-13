@@ -1,79 +1,69 @@
-import { Box, Typography, Container, Grid, Stepper, Step, StepLabel, StepContent } from '@mui/material';
-import {
-  PersonAdd as PersonAddIcon,
-  CalendarToday as CalendarIcon,
-  Assessment as AssessmentIcon,
-  CheckCircle as CheckCircleIcon,
-} from '@mui/icons-material';
+import { Box, Container, Typography, Grid, Paper } from '@mui/material';
+import { motion } from 'framer-motion';
+import CodeIcon from '@mui/icons-material/Code';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import ImageIcon from '@mui/icons-material/Image';
 
 const steps = [
   {
-    label: 'Sign Up',
-    description: 'Create your account and set up your veterinary practice profile.',
-    icon: <PersonAddIcon />,
+    title: 'Enter Your Prompt',
+    description: 'Describe the image you want to generate in detail.',
+    icon: <CodeIcon sx={{ fontSize: 40 }} />,
   },
   {
-    label: 'Schedule Appointments',
-    description: 'Start managing appointments with our intuitive calendar system.',
-    icon: <CalendarIcon />,
+    title: 'Choose Style',
+    description: 'Select from various artistic styles to match your vision.',
+    icon: <CloudUploadIcon sx={{ fontSize: 40 }} />,
   },
   {
-    label: 'Manage Records',
-    description: 'Keep track of patient records and medical history digitally.',
-    icon: <AssessmentIcon />,
-  },
-  {
-    label: 'Grow Your Practice',
-    description: 'Use analytics and insights to improve your practice efficiency.',
-    icon: <CheckCircleIcon />,
+    title: 'Generate & Download',
+    description: 'Get your AI-generated image and download it in high resolution.',
+    icon: <ImageIcon sx={{ fontSize: 40 }} />,
   },
 ];
 
-export default function HowItWorks() {
+const HowItWorks = () => {
   return (
-    <Box
-      sx={{
-        bgcolor: 'background.paper',
-        py: 8,
-      }}
-      id="how-it-works"
-    >
+    <Box sx={{ py: 8, bgcolor: 'background.default' }}>
       <Container maxWidth="lg">
-        <Typography
-          component="h2"
-          variant="h3"
-          align="center"
-          color="text.primary"
-          gutterBottom
-          sx={{ fontWeight: 'bold', mb: 6 }}
-        >
+        <Typography variant="h4" component="h2" align="center" gutterBottom>
           How It Works
         </Typography>
+        <Typography variant="subtitle1" align="center" color="text.secondary" paragraph>
+          Create stunning AI-generated images in three simple steps
+        </Typography>
         <Grid container spacing={4}>
-          <Grid item xs={12} md={8} sx={{ mx: 'auto' }}>
-            <Stepper orientation="vertical">
-              {steps.map((step, index) => (
-                <Step key={step.label} active={true}>
-                  <StepLabel
-                    StepIconProps={{
-                      icon: step.icon,
-                    }}
-                  >
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                      {step.label}
-                    </Typography>
-                  </StepLabel>
-                  <StepContent>
-                    <Typography color="text.secondary" sx={{ mb: 2 }}>
-                      {step.description}
-                    </Typography>
-                  </StepContent>
-                </Step>
-              ))}
-            </Stepper>
-          </Grid>
+          {steps.map((step) => (
+            <Grid item xs={12} md={4} key={step.title}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <Paper
+                  sx={{
+                    p: 4,
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                  }}
+                >
+                  <Box sx={{ mb: 2 }}>{step.icon}</Box>
+                  <Typography variant="h6" gutterBottom>
+                    {step.title}
+                  </Typography>
+                  <Typography color="text.secondary">
+                    {step.description}
+                  </Typography>
+                </Paper>
+              </motion.div>
+            </Grid>
+          ))}
         </Grid>
       </Container>
     </Box>
   );
-} 
+};
+
+export default HowItWorks; 

@@ -1,8 +1,7 @@
-import React from 'react';
-import { Box, Container, Typography, Link as MuiLink, Grid } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Box, Container, Typography, Link, Grid } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 
-export function Footer() {
+const Footer = () => {
   return (
     <Box
       component="footer"
@@ -10,7 +9,10 @@ export function Footer() {
         py: 6,
         px: 2,
         mt: 'auto',
-        backgroundColor: (theme) => theme.palette.grey[100],
+        backgroundColor: (theme) =>
+          theme.palette.mode === 'light'
+            ? theme.palette.grey[200]
+            : theme.palette.grey[800],
       }}
     >
       <Container maxWidth="lg">
@@ -20,49 +22,52 @@ export function Footer() {
               Veturn AI
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Empowering veterinary practices with AI-powered tools for better patient care and practice management.
+              Transform your ideas into reality with our suite of AI-powered tools.
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
             <Typography variant="h6" color="text.primary" gutterBottom>
-              Quick Links
+              Links
             </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <MuiLink component={Link} to="/tools/text-to-image" color="inherit">
-                Text to Image
-              </MuiLink>
-              <MuiLink component={Link} to="/tools/text-to-speech" color="inherit">
-                Text to Speech
-              </MuiLink>
-              <MuiLink component={Link} to="/tools/email-agents" color="inherit">
-                Email Agents
-              </MuiLink>
-              <MuiLink component={Link} to="/pricing" color="inherit">
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Link component={RouterLink} to="/" color="inherit">
+                Home
+              </Link>
+              <Link component={RouterLink} to="/pricing" color="inherit">
                 Pricing
-              </MuiLink>
+              </Link>
+              <Link component={RouterLink} to="/faq" color="inherit">
+                FAQ
+              </Link>
+              <Link component={RouterLink} to="/contact" color="inherit">
+                Contact
+              </Link>
             </Box>
           </Grid>
           <Grid item xs={12} sm={4}>
             <Typography variant="h6" color="text.primary" gutterBottom>
-              Contact
+              Legal
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Email: support@veturn.ai
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Phone: (555) 123-4567
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Address: 123 Vet Street, Suite 100
-            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Link href="#" color="inherit">
+                Privacy Policy
+              </Link>
+              <Link href="#" color="inherit">
+                Terms of Service
+              </Link>
+            </Box>
           </Grid>
         </Grid>
-        <Box sx={{ mt: 4, pt: 2, borderTop: 1, borderColor: 'divider' }}>
+        <Box sx={{ mt: 5 }}>
           <Typography variant="body2" color="text.secondary" align="center">
-            © {new Date().getFullYear()} Veturn AI. All rights reserved.
+            {'© '}
+            {new Date().getFullYear()}
+            {' Veturn AI. All rights reserved.'}
           </Typography>
         </Box>
       </Container>
     </Box>
   );
-} 
+};
+
+export default Footer; 
