@@ -36,7 +36,7 @@ applications:
         paths:
           - backend/venv/**/*
           - backend/.cache/**/*
-  environment:
-    REPLICATE_API_TOKEN: ${REPLICATE_API_TOKEN}
-    API_GATEWAY_URL: https://w54xn6l1k9.execute-api.us-east-1.amazonaws.com/prod
-  appRoot: backend
+      environment:
+        REPLICATE_API_TOKEN: ${REPLICATE_API_TOKEN}
+        API_GATEWAY_URL: https://w54xn6l1k9.execute-api.us-east-1.amazonaws.com/prod
+      appRoot: backend
