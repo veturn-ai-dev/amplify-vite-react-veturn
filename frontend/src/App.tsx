@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@mui/material/styles';
-import { theme } from './theme';
+import theme from './theme';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import Header from './components/layout/Header';

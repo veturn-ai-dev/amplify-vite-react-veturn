@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Container, Typography, Grid, Paper, Button, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Check as CheckIcon } from '@mui/icons-material';
 import { motion } from 'framer-motion';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Container, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
