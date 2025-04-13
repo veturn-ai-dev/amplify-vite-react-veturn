@@ -1,39 +1,38 @@
 version: 1
-applications:
-  - frontend:
-      phases:
-        preBuild:
-          commands:
-            - cd frontend
-            - npm ci
-        build:
-          commands:
-            - npm run build
-      artifacts:
-        baseDirectory: frontend/dist
-        files:
-          - '**/*'
-      cache:
-        paths:
-          - frontend/node_modules/**/*
-      appRoot: frontend
-  - backend:
-      phases:
-        preBuild:
-          commands:
-            - cd backend
-            - pip install -r requirements.txt
-        build:
-          commands:
-            - docker build -t backend .
-      artifacts:
-        baseDirectory: backend
-        files:
-          - '**/*'
-      cache:
-        paths:
-          - backend/venv/**/*
-      environment:
-        REPLICATE_API_TOKEN: ${REPLICATE_API_TOKEN}
-        API_GATEWAY_URL: https://w54xn6l1k9.execute-api.us-east-1.amazonaws.com/prod
-      appRoot: backend
+build:
+  phases:
+    preBuild:
+      commands:
+        - cd frontend
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: frontend/dist
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - frontend/node_modules/**/*
+  appRoot: frontend
+backend:
+  phases:
+    preBuild:
+      commands:
+        - cd backend
+        - pip install -r requirements.txt
+    build:
+      commands:
+        - docker build -t backend .
+  artifacts:
+    baseDirectory: backend
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - backend/venv/**/*
+  environment:
+    REPLICATE_API_TOKEN: ${REPLICATE_API_TOKEN}
+    API_GATEWAY_URL: https://w54xn6l1k9.execute-api.us-east-1.amazonaws.com/prod
+  appRoot: backend
