@@ -17,6 +17,7 @@ applications:
         paths:
           - frontend/node_modules/**/*
           - frontend/.npm/**/*
+      appRoot: frontend
   - backend:
       phases:
         preBuild:
