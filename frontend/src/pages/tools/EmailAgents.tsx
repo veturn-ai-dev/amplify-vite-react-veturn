@@ -10,7 +10,7 @@ import {
   Grid,
   CircularProgress,
 } from '@mui/material';
-import { Add as PlusIcon, Settings as SettingsIcon, Mail as MailIcon } from '@mui/icons-material';
+import { Settings as SettingsIcon, Mail as MailIcon } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { IconButton } from '@mui/material';
 
