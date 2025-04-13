@@ -21,10 +21,13 @@ backend:
     preBuild:
       commands:
         - cd backend
+        - python -m venv venv
+        - source venv/bin/activate
         - pip install -r requirements.txt
     build:
       commands:
-        - docker build -t backend .
+        - python -m pip install --upgrade pip
+        - pip install -r requirements.txt
   artifacts:
     baseDirectory: backend
     files:
