@@ -1,42 +1,41 @@
 version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - cd ../frontend
-        - npm install
-    build:
-      commands:
-        - cd ..
-        - ls -la
-        - npm run build
-  artifacts:
-    baseDirectory: frontend/dist
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - frontend/node_modules/**/*
-  appRoot: frontend
-backend:
-  phases:
-    preBuild:
-      commands:
-        - cd backend
-        - python -m venv venv
-        - source venv/bin/activate
-        - pip install -r requirements.txt
-    build:
-      commands:
-        - python -m pip install --upgrade pip
-        - pip install -r requirements.txt
-  artifacts:
-    baseDirectory: backend
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - backend/venv/**/*
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - cd frontend
+            - npm ci
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: frontend/dist
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - frontend/node_modules/**/*
+          - frontend/.npm/**/*
+  - backend:
+      phases:
+        preBuild:
+          commands:
+            - cd backend
+            - python -m venv venv
+            - source venv/bin/activate
+            - pip install -r requirements.txt
+        build:
+          commands:
+            - python main.py
+      artifacts:
+        baseDirectory: backend
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - backend/venv/**/*
+          - backend/.cache/**/*
   environment:
     REPLICATE_API_TOKEN: ${REPLICATE_API_TOKEN}
     API_GATEWAY_URL: https://w54xn6l1k9.execute-api.us-east-1.amazonaws.com/prod
