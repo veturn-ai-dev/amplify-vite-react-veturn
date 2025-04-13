@@ -5,9 +5,11 @@ applications:
       phases:
         preBuild:
           commands:
+            - echo "Installing frontend dependencies..."
             - npm ci
         build:
           commands:
+            - echo "Building frontend application..."
             - npm run build
       artifacts:
         baseDirectory: dist
@@ -16,26 +18,29 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-          - .npm/**/*
   - appRoot: backend
     backend:
       phases:
         preBuild:
           commands:
+            - echo "Setting up Python virtual environment..."
             - python -m venv venv
             - source venv/bin/activate
+            - python -m pip install --upgrade pip
             - pip install -r requirements.txt
         build:
           commands:
+            - echo "Executing backend Python script..."
             - python main.py
       artifacts:
-        baseDirectory: .
+        baseDirectory: . # If no output artifacts, leave this as `.`
         files:
           - '**/*'
       cache:
         paths:
           - venv/**/*
-          - .cache/**/*
-      environment:
-        REPLICATE_API_TOKEN: ${REPLICATE_API_TOKEN}
-        API_GATEWAY_URL: https://w54xn6l1k9.execute-api.us-east-1.amazonaws.com/prod
+
+environment:
+  variables:
+    REPLICATE_API_TOKEN: ${REPLICATE_API_TOKEN}
+    API_GATEWAY_URL: https://w54xn6l1k9.execute-api.us-east-1.amazonaws.com/prod
