@@ -1,25 +1,51 @@
-## AWS Amplify React+Vite Starter Template
+# Veturn AI Suite
 
-This repository provides a starter template for creating applications using React+Vite and AWS Amplify, emphasizing easy setup for authentication, API, and database capabilities.
+A full-stack application for AI-powered creative tools, built with React, FastAPI, and AWS Amplify.
 
-## Overview
+## Project Structure
 
-This template equips you with a foundational React application integrated with AWS Amplify, streamlined for scalability and performance. It is ideal for developers looking to jumpstart their project with pre-configured AWS services like Cognito, AppSync, and DynamoDB.
+```
+veturn-ai-suite/
+├── frontend/           # React frontend application
+│   ├── src/           # Source code
+│   ├── public/        # Static assets
+│   └── package.json   # Frontend dependencies
+├── backend/           # FastAPI backend
+│   ├── main.py        # API endpoints
+│   └── requirements.txt # Python dependencies
+└── amplify.yml        # AWS Amplify configuration
+```
 
-## Features
+## Local Development
 
-- **Authentication**: Setup with Amazon Cognito for secure user authentication.
-- **API**: Ready-to-use GraphQL endpoint with AWS AppSync.
-- **Database**: Real-time database powered by Amazon DynamoDB.
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## Deploying to AWS
+### Backend
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
 
-For detailed instructions on deploying your application, refer to the [deployment section](https://docs.amplify.aws/react/start/quickstart/#deploy-a-fullstack-app-to-aws) of our documentation.
+## Deployment
 
-## Security
+The application is configured for deployment with AWS Amplify. The `amplify.yml` file contains the build and deployment configuration.
 
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+### Environment Variables
 
-## License
+Create the following environment variables in your AWS Amplify console:
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
+- `REPLICATE_API_TOKEN`: Your Replicate API token
+- `API_GATEWAY_URL`: The URL of your API Gateway endpoint
+
+## API Endpoints
+
+- Text to Image Generation: `/api/generate-image`
+- Health Check: `/api/health`
