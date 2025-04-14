@@ -24,6 +24,7 @@ frontend:
   cache:
     paths:
       - frontend/node_modules/**/*
+      - frontend/.npm  # Clear npm cache
 
 backend:
   phases:
