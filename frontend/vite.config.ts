@@ -21,7 +21,6 @@ export default defineConfig({
         interop: 'auto'
       },
       // Specify platform-neutral settings
-      platform: 'neutral',
       treeshake: {
         preset: 'recommended',
         moduleSideEffects: false
