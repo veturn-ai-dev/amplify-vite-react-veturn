@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   root: '.',
+  base: '/',
   build: {
     outDir: 'dist',
     sourcemap: true,
@@ -17,7 +18,7 @@ export default defineConfig({
     }
   },
   server: {
-    port: 3000,
+    port: 3000
   },
   optimizeDeps: {
     exclude: ['@rollup/rollup-linux-x64-gnu']
