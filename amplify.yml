@@ -5,10 +5,13 @@ frontend:
       commands:
         # Frontend setup
         - echo "Installing frontend dependencies..."
-        - cd frontend && npm ci
+        - ls -la
+        - cd ../frontend && npm ci
     build:
       commands:
         # Frontend build
+        - echo "Building frontend..."
+        - ls -la
         - cd frontend && npm run build
   artifacts:
     baseDirectory: frontend/dist  # Adjust to match your framework's output folder
