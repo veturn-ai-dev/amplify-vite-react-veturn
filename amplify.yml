@@ -12,7 +12,7 @@ frontend:
         # Frontend build
         - echo "Building frontend..."
         - ls -la
-        - cd frontend && npm run build
+        - cd ../frontend && npm run build
   artifacts:
     baseDirectory: frontend/dist  # Adjust to match your framework's output folder
     files:
