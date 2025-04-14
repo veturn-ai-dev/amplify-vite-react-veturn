@@ -34,7 +34,9 @@ backend:
     build:
       commands:
         # Execute Python script
-        - cd backend && python main.py
+        - echo "Executing Python script..."
+        - ls -la
+        - python main.py
   artifacts:
     baseDirectory: backend  # No build output needed if backend is serverless (e.g., API Gateway/Lambda)
   cache:
