@@ -17,7 +17,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const pages = [
   { name: 'Home', path: '/' },
-  { name: 'Text to Image', path: '/text-to-image' },
+  { name: 'Text to Image', path: '/tools/text-to-image' },
   { name: 'Pricing', path: '/pricing' },
   { name: 'FAQ', path: '/faq' },
   { name: 'Contact', path: '/contact' },
