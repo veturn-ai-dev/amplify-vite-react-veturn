@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import post from '@aws-amplify/api-rest';
+import { API } from 'aws-amplify'; // Import API from aws-amplify
 import {
   Box,
   Container,
@@ -30,23 +30,15 @@ const TextToImage = () => {
     setError('');
 
     try {
-      const response = await post({
-        apiName: 'imageGenerationApi',
-        path: '/generate-image',
-        options: {
-          body: { prompt },
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
+      const response = await API.post('imageGenerationApi', '/generate-image', {
+        body: { prompt },
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
-      
-      if (response.statusCode !== 200) {
-        throw new Error('Failed to generate image');
-      }
 
-      const data = await response.body.json();
-      setImageUrl(data.imageUrl);
+      // Assuming the response is JSON with an imageUrl field
+      setImageUrl(response.imageUrl);
     } catch (err) {
       setError('Failed to generate image. Please try again.');
     } finally {
