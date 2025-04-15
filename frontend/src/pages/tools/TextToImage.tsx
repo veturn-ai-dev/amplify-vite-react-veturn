@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { post } from 'aws-amplify/api'; // Import Amplify API client
 import {
   Box,
   Container,
@@ -29,19 +30,25 @@ const TextToImage = () => {
     setError('');
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/generate-image`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt }),
+      // Amplify Gen 2 API call
+      const restOperation = post({
+        apiName: 'imageGenerationApi', // Must match your API name in Amplify
+        path: '/generate-image',
+        options: {
+          body: { prompt },
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       });
 
-      if (!response.ok) {
+      const response = await restOperation.response;
+      
+      if (response.statusCode !== 200) {
         throw new Error('Failed to generate image');
       }
 
-      const data = await response.json();
+      const data = await response.body.json();
       setImageUrl(data.imageUrl);
     } catch (err) {
       setError('Failed to generate image. Please try again.');
@@ -104,4 +111,4 @@ const TextToImage = () => {
   );
 };
 
-export default TextToImage; 
+export default TextToImage;
