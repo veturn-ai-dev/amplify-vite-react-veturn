@@ -24,9 +24,7 @@
     "react-router-dom": "^6.20.0",
     "rollup": "4.9.6",
     "yup": "^1.6.1",
-    "@aws-amplify/api-rest": "^2.0.0",
-    "aws-amplify": "^6.0.0",
-    "@aws-amplify/ui-react": "^2.0.0"
+    "@aws-amplify/api-rest": "^2.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
