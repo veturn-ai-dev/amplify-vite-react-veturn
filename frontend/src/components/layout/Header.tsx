@@ -11,7 +11,6 @@ import {
   Button,
   MenuItem,
   Avatar,
-  useTheme,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useAuth } from '../../contexts/AuthContext';
@@ -29,7 +28,6 @@ const Header = () => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const theme = useTheme();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
