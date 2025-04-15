@@ -9,7 +9,7 @@ applications:
             # Frontend setup
             - echo "Installing frontend dependencies..."
             - ls -la
-            - cd ../frontend && npm ci
+            - cd ../frontend && npm install
         build:
           commands:
             # Frontend build
@@ -21,6 +21,10 @@ applications:
         files:
           - '**/*'
       appRoot: frontend
+      cache:
+        paths:
+          - frontend/node_modules/**/*
+          - frontend/.npm/**/*
     backend:
       phases:
         preBuild:
