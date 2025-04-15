@@ -5,6 +5,7 @@ import replicate
 import os
 from dotenv import load_dotenv
 from mangum import Mangum
+from typing import List, Optional
 
 # Load environment variables
 load_dotenv()
@@ -15,92 +16,54 @@ app = FastAPI(redirect_slashes=False)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",  # Vite default port
-        "http://localhost:5174",  # Alternative Vite port
-        "http://127.0.0.1:5173",  # Localhost alternative
-        "http://127.0.0.1:5174",  # Localhost alternative
-        "https://*.amplifyapp.com",  # All Amplify domains
-        "https://veturn.ai",
-        "https://w54xn6l1k9.execute-api.us-east-1.amazonaws.com",  # API Gateway domain
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://*.amplifyapp.com",
+        "https://main.d3qhharr5w9v34.amplifyapp.com",
+        "https://w54xn6l1k9.execute-api.us-east-1.amazonaws.com"
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"]
 )
 
 @app.get("/")
-async def read_root():
-    return {"message": "Welcome to the API!"}
+async def root():
+    return {"message": "Welcome to Veturn AI API"}
 
 class ImagePrompt(BaseModel):
     prompt: str
-    style: str = "realistic"  # default style
-    num_outputs: int = 1
-    image_dimensions: str = "512x512"
+    style: Optional[str] = "natural"
+    num_outputs: Optional[int] = 1
+    image_dimensions: Optional[str] = "1024x1024"
 
 @app.post("/api/generate-image")
 @app.post("/api/generate-image/")
-async def generate_image(prompt_data: ImagePrompt):
+async def generate_image(prompt: ImagePrompt):
     try:
-        print(f"Received request with prompt: {prompt_data.prompt}")
-        
-        # Validate Replicate API token
-        api_token = os.getenv("REPLICATE_API_TOKEN")
-        if not api_token:
-            raise HTTPException(
-                status_code=500,
-                detail="Replicate API token not configured"
-            )
+        if not os.getenv("REPLICATE_API_TOKEN"):
+            raise HTTPException(status_code=500, detail="REPLICATE_API_TOKEN not configured")
 
-        # Initialize Replicate client
-        client = replicate.Client(api_token=api_token)
-
-        # Model selection based on style
-        model_versions = {
-            "realistic": "stability-ai/stable-diffusion:db21e45d3f7023abc2a46ee38a23973f6dce16bb082a930b0c49861f96d1e5bf",
-            "artistic": "stability-ai/stable-diffusion:ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e33b",
-            "anime": "cjwbw/anything-v4.0:42df87e16124c36d2297bb6892cf91b16c160204554e42486e80c9c26509e33b",
-        }
-
-        model_version = model_versions.get(prompt_data.style, model_versions["realistic"])
-        print(f"Using model version: {model_version}")
-
-        # Generate image
         output = replicate.run(
-            model_version,
+            "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
             input={
-                "prompt": prompt_data.prompt,
-                "negative_prompt": "blurry, bad quality, distorted, disfigured",
-                "width": 512,
-                "height": 512,
-                "num_outputs": prompt_data.num_outputs,
+                "width": 1024,
+                "height": 1024,
+                "prompt": prompt.prompt,
+                "num_outputs": prompt.num_outputs,
                 "num_inference_steps": 50,
                 "guidance_scale": 7.5,
-                "scheduler": "K_EULER_ANCESTRAL",
+                "scheduler": "K_EULER"
             }
         )
 
-        print(f"Raw output from Replicate: {output}")
+        if not output or not isinstance(output, list):
+            raise HTTPException(status_code=500, detail="Unexpected response format from Replicate")
 
-        # Extract image URLs from the raw output
-        if isinstance(output, list):
-            image_urls = output
-            print(f"Image url passed to UI: {image_urls}")
-            return {
-                "success": True,
-                "images": image_urls,
-                "message": "Images generated successfully"
-            }
-        else:
-            raise ValueError("Unexpected response format from Replicate API")
+        return {"imageUrl": output[0]}
 
     except Exception as e:
-        print(f"Error generating image: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to generate image: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/health")
 async def health_check():
