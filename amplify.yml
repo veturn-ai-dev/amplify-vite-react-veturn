@@ -9,7 +9,7 @@ applications:
             # Frontend setup
             - echo "Installing frontend dependencies..."
             - ls -la
-            - cd ../frontend && npm install --verbose
+            - cd ../frontend && npm install
         build:
           commands:
             # Frontend build
