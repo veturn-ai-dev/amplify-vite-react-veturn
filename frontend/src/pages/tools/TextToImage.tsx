@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { generateClient } from '@aws-amplify/api';
+import post from '@aws-amplify/api-rest';
 import {
   Box,
   Container,
@@ -30,8 +30,7 @@ const TextToImage = () => {
     setError('');
 
     try {
-      const client = generateClient();
-      const response = await client.post({
+      const response = await post({
         apiName: 'imageGenerationApi',
         path: '/generate-image',
         options: {
@@ -41,7 +40,6 @@ const TextToImage = () => {
           }
         }
       });
-      
       
       if (response.statusCode !== 200) {
         throw new Error('Failed to generate image');
