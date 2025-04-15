@@ -4,15 +4,14 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   signOut,
-  signInWithPopup,
-  GoogleAuthProvider,
-  OAuthProvider
+  signInWithPopup
 } from 'firebase/auth';
 import { auth, googleProvider, appleProvider } from '../config/firebase';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -65,8 +64,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const value = {
+    user,
+    loading,
+    isAuthenticated: !!user,
+    login,
+    signup,
+    logout,
+    signInWithGoogle,
+    signInWithApple
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout, signInWithGoogle, signInWithApple }}>
+    <AuthContext.Provider value={value}>
       {!loading && children}
     </AuthContext.Provider>
   );
