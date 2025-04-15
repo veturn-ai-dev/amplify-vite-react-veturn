@@ -1,66 +1,81 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { 
+  User, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut,
+  signInWithPopup,
+  GoogleAuthProvider,
+  OAuthProvider
+} from 'firebase/auth';
+import { auth, googleProvider, appleProvider } from '../config/firebase';
 
 interface AuthContextType {
-  user: any | null;
-  isAuthenticated: boolean;
+  user: User | null;
+  loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
+  signInWithApple: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUser(user);
+      setLoading(false);
+    });
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<any | null>(null);
+    return unsubscribe;
+  }, []);
 
-  const login = async (email: string) => {
-    try {
-      console.log('Login attempt with:', email);
-      setUser({ email });
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
-    }
+  const login = async (email: string, password: string) => {
+    await signInWithEmailAndPassword(auth, email, password);
   };
 
-  const signup = async (email: string) => {
-    try {
-      console.log('Signup attempt with:', email);
-      setUser({ email });
-    } catch (error) {
-      console.error('Signup error:', error);
-      throw error;
-    }
+  const signup = async (email: string, password: string) => {
+    await createUserWithEmailAndPassword(auth, email, password);
   };
 
   const logout = async () => {
+    await signOut(auth);
+  };
+
+  const signInWithGoogle = async () => {
     try {
-      setUser(null);
+      await signInWithPopup(auth, googleProvider);
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('Google sign-in error:', error);
       throw error;
     }
   };
 
-  const value = {
-    user,
-    isAuthenticated: !!user,
-    login,
-    signup,
-    logout,
+  const signInWithApple = async () => {
+    try {
+      await signInWithPopup(auth, appleProvider);
+    } catch (error) {
+      console.error('Apple sign-in error:', error);
+      throw error;
+    }
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, signInWithGoogle, signInWithApple }}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }; 
