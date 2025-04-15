@@ -1,55 +1,60 @@
 version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - echo "Cleaning dependencies..."
-        - cd ../frontend && rm -rf node_modules package-lock.json
-        # Frontend setup
-        - echo "Installing frontend dependencies..."
-        - ls -la
-        - cd ../frontend && npm ci
-    build:
-      commands:
-        # Frontend build
-        - echo "Building frontend..."
-        - ls -la
-        - cd ../frontend && npm run build
-  artifacts:
-    baseDirectory: frontend/dist  # Adjust to match your framework's output folder
-    files:
-      - '**/*'
-  appRoots: 
-    - frontend  # Explicit root for Amplify Gen 2 to detect the app
-  cache:
-    paths:
-      - frontend/node_modules/**/*
-      - frontend/.npm  # Clear npm cache
-
-backend:
-  phases:
-    preBuild:
-      commands:
-        # Python backend setup
-        - echo "Setting up Python virtual environment..."
-        - cd backend
-        - python -m venv venv
-        - source venv/bin/activate
-        - python -m pip install --upgrade pip
-        - pip install -r requirements.txt
-    build:
-      commands:
-        # Execute Python script
-        - echo "Executing Python script..."
-        - ls -la
-        - cd ../backend && python main.py
-  artifacts:
-    baseDirectory: backend  # No build output needed if backend is serverless (e.g., API Gateway/Lambda)
-  cache:
-    paths:
-      - backend/venv/**/*
-
-environment:
-  variables:
-    REPLICATE_API_TOKEN: ${REPLICATE_API_TOKEN}  # Ensure these are defined in Amplify env vars
-    API_GATEWAY_URL: https://w54xn6l1k9.execute-api.us-east-1.amazonaws.com/prod
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - echo "Cleaning dependencies..."
+            - cd ../frontend && rm -rf node_modules package-lock.json
+            # Frontend setup
+            - echo "Installing frontend dependencies..."
+            - ls -la
+            - cd ../frontend && npm ci
+        build:
+          commands:
+            # Frontend build
+            - echo "Building frontend..."
+            - ls -la
+            - cd ../frontend && npm run build
+      artifacts:
+        baseDirectory: frontend/dist  # Adjust to match your framework's output folder
+        files:
+          - '**/*'
+      appRoot: frontend
+    backend:
+      phases:
+        preBuild:
+          commands:
+            # Python backend setup
+            - echo "Setting up Python virtual environment..."
+            - cd backend
+            - python -m venv venv
+            - source venv/bin/activate
+            - python -m pip install --upgrade pip
+            - pip install -r requirements.txt
+        build:
+          commands:
+            # Execute Python script
+            - echo "Executing Python script..."
+            - ls -la
+            - cd ../backend && python main.py
+      artifacts:
+        baseDirectory: backend  # No build output needed if backend is serverless (e.g., API Gateway/Lambda)
+        files:
+          - '**/*'
+          - 'test_lambda.py'
+      cache:
+        paths:
+          - backend/venv/**/*
+      appRoot: backend
+      environment:
+        REPLICATE_API_TOKEN: ${REPLICATE_API_TOKEN}  # Ensure these are defined in Amplify env vars
+        API_GATEWAY_URL: https://w54xn6l1k9.execute-api.us-east-1.amazonaws.com/prod
+      functions:
+        testLambda:
+          handler: test_lambda.lambda_handler
+          runtime: python3.9
+          events:
+            - http:
+                path: /test
+                method: post
