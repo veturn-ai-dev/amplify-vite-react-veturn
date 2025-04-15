@@ -11,13 +11,14 @@ import {
   Button,
   MenuItem,
   Avatar,
+  useTheme,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useAuth } from '../../contexts/AuthContext';
 
 const pages = [
   { name: 'Home', path: '/' },
-  { name: 'Text to Image', path: '/tools/text-to-image' },
+  { name: 'AI Tools', path: '/tools/text-to-image' },
   { name: 'Pricing', path: '/pricing' },
   { name: 'FAQ', path: '/faq' },
   { name: 'Contact', path: '/contact' },
@@ -28,6 +29,7 @@ const Header = () => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -56,7 +58,7 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky" elevation={0}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -68,8 +70,9 @@ const Header = () => {
               mr: 2,
               display: { xs: 'none', md: 'flex' },
               fontWeight: 700,
-              color: 'inherit',
+              color: 'primary.main',
               textDecoration: 'none',
+              fontSize: '1.5rem',
             }}
           >
             Veturn AI
@@ -78,7 +81,7 @@ const Header = () => {
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -101,15 +104,16 @@ const Header = () => {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'flex', md: 'none' },
+                display: { xs: 'block', md: 'none' },
               }}
             >
               {pages.map((page) => (
                 <MenuItem
                   key={page.name}
-                  onClick={handleCloseNavMenu}
-                  component={RouterLink}
-                  to={page.path}
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate(page.path);
+                  }}
                 >
                   <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
@@ -118,7 +122,7 @@ const Header = () => {
           </Box>
 
           <Typography
-            variant="h5"
+            variant="h6"
             noWrap
             component={RouterLink}
             to="/"
@@ -127,21 +131,29 @@ const Header = () => {
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
               fontWeight: 700,
-              color: 'inherit',
+              color: 'primary.main',
               textDecoration: 'none',
+              fontSize: '1.25rem',
             }}
           >
             Veturn AI
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', gap: 2 }}>
             {pages.map((page) => (
               <Button
                 key={page.name}
-                onClick={handleCloseNavMenu}
                 component={RouterLink}
                 to={page.path}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                onClick={handleCloseNavMenu}
+                sx={{
+                  color: 'text.primary',
+                  display: 'block',
+                  fontWeight: 600,
+                  '&:hover': {
+                    color: 'primary.main',
+                  },
+                }}
               >
                 {page.name}
               </Button>
@@ -152,7 +164,7 @@ const Header = () => {
             {user ? (
               <>
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt={user.displayName || 'User'} src={user.photoURL || undefined} />
+                  <Avatar alt={user.email || 'User'} src="/static/images/avatar/2.jpg" />
                 </IconButton>
                 <Menu
                   sx={{ mt: '45px' }}
@@ -170,22 +182,41 @@ const Header = () => {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  <MenuItem onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">Profile</Typography>
-                  </MenuItem>
                   <MenuItem onClick={handleLogout}>
                     <Typography textAlign="center">Logout</Typography>
                   </MenuItem>
                 </Menu>
               </>
             ) : (
-              <Button
-                color="inherit"
-                component={RouterLink}
-                to="/auth/login"
-              >
-                Login
-              </Button>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button
+                  component={RouterLink}
+                  to="/auth/login"
+                  variant="outlined"
+                  sx={{
+                    color: 'primary.main',
+                    borderColor: 'primary.main',
+                    '&:hover': {
+                      borderColor: 'primary.dark',
+                    },
+                  }}
+                >
+                  Login
+                </Button>
+                <Button
+                  component={RouterLink}
+                  to="/auth/signup"
+                  variant="contained"
+                  sx={{
+                    backgroundColor: 'primary.main',
+                    '&:hover': {
+                      backgroundColor: 'primary.dark',
+                    },
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </Box>
             )}
           </Box>
         </Toolbar>
