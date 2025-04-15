@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { post } from 'aws-amplify/api'; // Import Amplify API client
+import { post } from '@aws-amplify/api-rest'; // Import Amplify API client
 import {
   Box,
   Container,

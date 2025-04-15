@@ -23,6 +23,7 @@ export default defineConfig({
     port: 3000
   },
   optimizeDeps: {
+    include: ['@aws-amplify/api-rest'],
     exclude: ['@rollup/rollup-linux-x64-gnu']
   }
 })
