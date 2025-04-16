@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { API } from 'aws-amplify'; // Import API from aws-amplify
+import { post } from '@aws-amplify/api-rest';
+import { Amplify } from '@aws-amplify/core';
 import {
   Box,
   Container,
@@ -11,6 +12,18 @@ import {
   Grid,
   CircularProgress,
 } from '@mui/material';
+
+// Configure Amplify (should be in a separate config file)
+Amplify.configure({
+  API: {
+    REST: {
+      imageGenerationApi: {
+        endpoint: import.meta.env.VITE_API_GATEWAY_URL,
+        region: import.meta.env.VITE_AWS_REGION,
+      },
+    },
+  },
+});
 
 const TextToImage = () => {
   const { user } = useAuth();
@@ -30,17 +43,24 @@ const TextToImage = () => {
     setError('');
 
     try {
-      const response = await API.post('imageGenerationApi', '/generate-image', {
-        body: { prompt },
-        headers: {
-          'Content-Type': 'application/json',
+      const token = await user.getIdToken();
+      const { body } = await post({
+        apiName: 'imageGenerationApi',
+        path: '/generate-image',
+        options: {
+          body: { prompt },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
         },
       });
 
-      // Assuming the response is JSON with an imageUrl field
-      setImageUrl(response.imageUrl);
+      const data = await body.json();
+      setImageUrl(data.imageUrl);
     } catch (err) {
       setError('Failed to generate image. Please try again.');
+      console.error('API Error:', err);
     } finally {
       setLoading(false);
     }
