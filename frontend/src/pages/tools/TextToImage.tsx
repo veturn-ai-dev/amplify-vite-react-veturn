@@ -25,6 +25,10 @@ Amplify.configure({
   },
 });
 
+interface ImageResponse {
+  imageUrl: string;
+}
+
 const TextToImage = () => {
   const { user } = useAuth();
   const [prompt, setPrompt] = useState('');
@@ -44,7 +48,7 @@ const TextToImage = () => {
 
     try {
       const token = await user.getIdToken();
-      const { body } = await post({
+      const response = await post({
         apiName: 'imageGenerationApi',
         path: '/generate-image',
         options: {
@@ -56,7 +60,7 @@ const TextToImage = () => {
         },
       });
 
-      const data = await body.json();
+      const data = (await response.response as unknown) as ImageResponse;
       setImageUrl(data.imageUrl);
     } catch (err) {
       setError('Failed to generate image. Please try again.');
