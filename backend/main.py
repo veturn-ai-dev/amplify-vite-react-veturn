@@ -16,10 +16,14 @@ app = FastAPI(redirect_slashes=False)
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for API Gateway
+    allow_origins=[
+        "https://main.d3qhharr5w9v34.amplifyapp.com",
+        "http://localhost:3000",
+        "http://localhost:5173"
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
     expose_headers=["*"],
     max_age=3600,
 )

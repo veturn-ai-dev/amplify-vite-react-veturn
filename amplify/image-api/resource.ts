@@ -9,9 +9,14 @@ export const api = defineApi({
         handler: generateImage,
         // Enable CORS
         cors: {
-          allowedOrigins: ['*'],
-          allowedMethods: ['POST'],
-          allowedHeaders: ['*'],
+          allowedOrigins: [
+            'https://main.d3qhharr5w9v34.amplifyapp.com',
+            'http://localhost:3000',
+            'http://localhost:5173'
+          ],
+          allowedMethods: ['POST', 'OPTIONS'],
+          allowedHeaders: ['Content-Type', 'Authorization'],
+          allowCredentials: true
         }
       }
     }
