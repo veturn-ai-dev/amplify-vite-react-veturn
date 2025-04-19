@@ -4,6 +4,14 @@ interface RequestBody {
   prompt: string;
 }
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': 'https://main.d3qhharr5w9v34.amplifyapp.com',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Credentials': 'true',
+  'Access-Control-Max-Age': '3600'
+};
+
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
@@ -11,13 +19,8 @@ export const handler = async (
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': 'https://main.d3qhharr5w9v34.amplifyapp.com',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Credentials': 'true',
-      },
-      body: '',
+      headers: corsHeaders,
+      body: 'Image generated successfully!',
     };
   }
 
@@ -27,10 +30,7 @@ export const handler = async (
     if (!authHeader) {
       return {
         statusCode: 401,
-        headers: {
-          'Access-Control-Allow-Origin': 'https://main.d3qhharr5w9v34.amplifyapp.com',
-          'Access-Control-Allow-Credentials': 'true',
-        },
+        headers: corsHeaders,
         body: JSON.stringify({ error: 'Authorization header is required' }),
       };
     }
@@ -43,19 +43,15 @@ export const handler = async (
     return {
       statusCode: 200,
       headers: {
+        ...corsHeaders,
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'https://main.d3qhharr5w9v34.amplifyapp.com',
-        'Access-Control-Allow-Credentials': 'true',
       },
       body: JSON.stringify({ imageUrl: mockImageUrl }),
     };
   } catch (error) {
     return {
       statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Origin': 'https://main.d3qhharr5w9v34.amplifyapp.com',
-        'Access-Control-Allow-Credentials': 'true',
-      },
+      headers: corsHeaders,
       body: JSON.stringify({ error: 'Image generation failed' }),
     };
   }

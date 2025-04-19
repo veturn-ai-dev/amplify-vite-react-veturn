@@ -16,7 +16,8 @@ export const api = defineApi({
           ],
           allowedMethods: ['POST', 'OPTIONS'],
           allowedHeaders: ['Content-Type', 'Authorization'],
-          allowCredentials: true
+          allowCredentials: true,
+          maxAge: 3600
         },
         // Enable authorization
         authorization: {
@@ -30,6 +31,20 @@ export const api = defineApi({
               }
             }
           }
+        }
+      },
+      options: {
+        handler: generateImage, // Use the same handler for OPTIONS
+        cors: {
+          allowedOrigins: [
+            'https://main.d3qhharr5w9v34.amplifyapp.com',
+            'http://localhost:3000',
+            'http://localhost:5173'
+          ],
+          allowedMethods: ['POST', 'OPTIONS'],
+          allowedHeaders: ['Content-Type', 'Authorization'],
+          allowCredentials: true,
+          maxAge: 3600
         }
       }
     }
