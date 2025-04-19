@@ -17,6 +17,19 @@ export const api = defineApi({
           allowedMethods: ['POST', 'OPTIONS'],
           allowedHeaders: ['Content-Type', 'Authorization'],
           allowCredentials: true
+        },
+        // Enable authorization
+        authorization: {
+          type: 'CUSTOM',
+          function: {
+            name: 'authorize',
+            parameters: {
+              token: {
+                type: 'string',
+                required: true
+              }
+            }
+          }
         }
       }
     }
