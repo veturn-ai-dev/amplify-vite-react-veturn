@@ -47,7 +47,6 @@ const TextToImage = () => {
     setError('');
 
     try {
-      const token = await user.getIdToken();
       const response = await post({
         apiName: 'imageGenerationApi',
         path: '/generate-image',
