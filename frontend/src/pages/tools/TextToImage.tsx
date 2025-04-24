@@ -18,7 +18,7 @@ Amplify.configure({
   API: {
     REST: {
       imageGenerationApi: {
-        endpoint: 'https://qir24snhcvbmvnnqgc47urjwbq.appsync-api.us-east-1.amazonaws.com/graphql',
+        endpoint: 'https://qir24snhcvbmvnnqgc47urjwbq.appsync-api.us-east-1.amazonaws.com',
         region: 'us-east-1',
       },
     },
@@ -54,7 +54,7 @@ const TextToImage = () => {
           body: { prompt },
           headers: {
             'Content-Type': 'application/json',
-            'x-api-key': 'da2-qro26lk6vfgmlbeed46j4pl2we',
+            'x-api-key': import.meta.env.VITE_API_KEY,
           },
         },
       });
